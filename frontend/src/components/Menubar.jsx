@@ -1,13 +1,15 @@
 import React from "react";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
+import Footer from "./Footer";
 
 const Menubar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <nav className=" bg-white px-8 py-4 flex justify-between items-center ">
       {/* left side elements */}
-      <div className="flex items-center space-x-2 cursor-pointer">
+      <Link className="flex items-center space-x-2 cursor-pointer" to="/">
         <img
           src="/src/assets/icon.jpg"
           className="h-8 w-8 flex flex-wrap items-center"
@@ -16,7 +18,7 @@ const Menubar = () => {
           Remove
           <span className="text-2xl font-semibold text-yellow-600">BG</span>
         </span>
-      </div>
+      </Link>
       {/* right side elements */}
       <div className="hidden md:flex items-center space-x-3">
         {" "}
