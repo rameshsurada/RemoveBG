@@ -2,10 +2,31 @@ import React from "react";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import Footer from "./Footer";
+import {
+  SignedIn,
+  SignedOut,
+  UserButton,
+  SignIn,
+  useUser
+} from "@clerk/clerk-react";
+import { useClerk } from "@clerk/clerk-react";
+import { assets } from "../assets/assets";
 
 const Menubar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { openSignIn, openSignUp } = useClerk();
+
+  const { user } = useUser();
+
+  const openRegister = () => {
+    openSignUp({});
+  };
+
+  const openLogin = () => {
+    openSignIn({});
+  };
+
   return (
     <nav className=" bg-white px-8 py-4 flex justify-between items-center ">
       {/* left side elements */}
@@ -22,11 +43,35 @@ const Menubar = () => {
       {/* right side elements */}
       <div className="hidden md:flex items-center space-x-3">
         {" "}
-        <button className="font-medium hover:text-blue-600"> Login</button>{" "}
-        <button className="font-medium bg-gray-100 hover:bg-gray-200 rounded-full py-2 px-4">
+        <SignedOut>
           {" "}
-          Sign Up
-        </button>{" "}
+          <button
+            className="font-medium hover:text-blue-600"
+            onClick={openLogin}
+          >
+            {" "}
+            Login
+          </button>{" "}
+          <button
+            className="font-medium bg-gray-100 hover:bg-gray-200 rounded-full py-2 px-4 "
+            onClick={openRegister}
+          >
+            {" "}
+            Sign Up
+          </button>{" "}
+        </SignedOut>
+        <SignedIn>
+          <Link
+            className="bg-blue-100 rounded-2xl px-4 py-1 flex text-center items-center hover:scale-105 duration-200"
+            to="/buycredits"
+          >
+            {" "}
+            <img src={assets.credits} className="h-7 w-7" />
+            <p className="text-gray-600"> Credits: 0</p>
+          </Link>
+          <p className="text-gray-700 font-medium "> Hi, {user?.fullName}</p>
+          <UserButton />
+        </SignedIn>
       </div>
       {/* mobile version */}
       <div className="flex md:hidden">
@@ -34,19 +79,42 @@ const Menubar = () => {
           {!isMenuOpen ? <Menu size={28} /> : <X size={28} />}
           {isMenuOpen && (
             <div className="flex flex-col absolute top-16 right-8 w-40 space-y-4 py-4 top-16 right-8 shadow-md bg-white ">
-              {" "}
-              <button className="font-medium hover:text-blue-600 b">
+              <SignedOut>
                 {" "}
-                Login
-              </button>{" "}
-              <button className="font-medium bg-gray-100 hover:bg-gray-200 rounded-full py-2 px-4">
-                {" "}
-                Sign Up
-              </button>{" "}
+                <button
+                  className="font-medium hover:text-blue-600 "
+                  onClick={openLogin}
+                >
+                  {" "}
+                  Login
+                </button>{" "}
+                <button
+                  className="font-medium bg-gray-100 hover:bg-gray-200 rounded-full py-2 px-4"
+                  onClick={openRegister}
+                >
+                  {" "}
+                  Sign Up
+                </button>{" "}
+              </SignedOut>
+              <SignedIn>
+                <Link
+                  className="bg-blue-100 rounded-2xl px-4 py-1 flex text-center items-center hover:scale-105 duration-200"
+                  to="/buycredits"
+                >
+                  {" "}
+                  <img src={assets.credits} className="h-7 w-7" />
+                  <p className="text-gray-600"> Credits: 0</p>
+                </Link>
+                <div className="flex gap-2">
+                  {" "}
+                  <UserButton className="ml-2" />
+                  <p> Hi,{user?.firstName}</p>
+                </div>
+              </SignedIn>
             </div>
           )}
         </button>
-      </div>
+      </div>{" "}
     </nav>
   );
 };

@@ -1,9 +1,13 @@
 import logo from "/src/assets/logo.webp"
 import hero from "/src/assets/hero.png"
+import credits1 from "../assets/credits1.png"
+import credits from "../assets/credits.png"
+import  original from "../assets/original.png"
+import bgremove from "./bgremove.png"
 
 
 export const assets = {
-    logo, hero
+    logo, hero, credits1,credits,original,bgremove
    
 }
 

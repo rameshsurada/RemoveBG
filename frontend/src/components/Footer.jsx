@@ -3,7 +3,7 @@ import { Facebook, Twitter, Mail } from "lucide-react";
 
 const Footer = () => {
   return (
-    <div className="p-4 sm:pl-20 py-4 grid grid-cols-1  sm:flex sm:justify-between ">
+    <div className="p-4 sm:pl-20 py-4 grid grid-cols-1  sm:flex sm:justify-between  ">
       {/* left side element */}{" "}
       <div className=" grid grid-cols-1 sm:flex items-center space-x-2 ">
         {/* image logo */}
