@@ -24,11 +24,12 @@ const clerkWebhooks = async (req, res) => {
             case "user.created": {
                 const userData = {
                     clerkId: data.id,
-                    email: data.email_address[0].email_address,
-                    firstName: data.first_name,
-                    lastName: data.last_name,
-                    photo: data.image_url,
-                };
+                    email: Array.isArray(data.email_address) ? data.email_address[0]?.email_address : "",
+                    firstName: data.first_name || "",
+                    lastName: data.last_name || "",
+                    photo: data.image_url || ""
+                  };
+
 
                 await userModel.create(userData);
                 res.status(201).json({ message: "User created" });
