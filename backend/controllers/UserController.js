@@ -1,62 +1,67 @@
-import { Webhook } from "svix"
-import userModel from "../models/userModel.js"
+
 // API controller function to manager clerk user with database
 //http://localhost:4000/api/user/webhooks
 
-const clerkWebhooks = async(req,res)=> {  
+import { Webhook } from "svix";
+import userModel from "../models/userModel.js";
+import ConnectDB from "../configs/mongodb.js";
 
-try {
-// create a svix instance with clerk webhook secret
-    const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET) 
+const clerkWebhooks = async (req, res) => {
+    try {
+        await ConnectDB();
 
-    await whook.verify(JSON.stringify(req.body), {
-        "svix-id":req.headers["svix-id"],
-        "svix-timestamp":req.headers["svix-timestamp"],
-        "svix-signature":req.headers["svix-signature"]
-    })
+        const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
-    const {data,type} =req.body
+        await whook.verify(JSON.stringify(req.body), {
+            "svix-id": req.headers["svix-id"],
+            "svix-timestamp": req.headers["svix-timestamp"],
+            "svix-signature": req.headers["svix-signature"],
+        });
 
-    switch (type) {
-        case "user.created": {
+        const { data, type } = req.body;
 
-            const userData = {clerkId: data.id,
-            email: data.email_address[0].email_address,
-            firstName: data.first_name,
-            lastName:data.last_name,
-            photo:data.image_url}
+        switch (type) {
+            case "user.created": {
+                const userData = {
+                    clerkId: data.id,
+                    email: data.email_address[0].email_address,
+                    firstName: data.first_name,
+                    lastName: data.last_name,
+                    photo: data.image_url,
+                };
 
-            break; 
+                await userModel.create(userData);
+                res.status(201).json({ message: "User created" });
+                break;
+            }
+
+            case "user.updated": {
+                const userData = {
+                    email: data.email_address[0].email_address,
+                    firstName: data.first_name,
+                    lastName: data.last_name,
+                    photo: data.image_url,
+                };
+
+                await userModel.findOneAndUpdate({ clerkId: data.id }, userData);
+                res.json({ message: "User updated" });
+                break;
+            }
+
+            case "user.deleted": {
+                await userModel.findOneAndDelete({ clerkId: data.id });
+                res.json({ message: "User deleted" });
+                break;
+            }
+
+            default:
+                res.status(200).json({ message: "Unhandled event type" });
+                break;
         }
-        case "user.updated" :{
-            const userData = {
-            email: data.email_address[0].email_address,
-            firstName: data.first_name,
-            lastName:data.last_name,
-            photo:data.image_url}
-
-            await userModel.findOneAndUpdate({clerkId:data.id},userData)
-            res.json({})
-
-            break; 
-        }
-        case "user.deleted": {
-
-            await userModel.findOneAndDelete({clerkId:data.id})
-            res.json({})
-
-            break; 
-        }
-        default : break;
+    } catch (error) {
+        console.error("Webhook error:", error.message);
+        res.status(500).json({ error: "Internal server error" });
     }
+};
 
-} 
-catch (error){
-
-    console.log(error.message)
-
-}
-
-}
-
-export {clerkWebhooks}
+export { clerkWebhooks };
