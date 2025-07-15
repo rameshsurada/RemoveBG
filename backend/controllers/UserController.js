@@ -1,68 +1,74 @@
 
 // API controller function to manager clerk user with database
 //http://localhost:4000/api/user/webhooks
-
 import { Webhook } from "svix";
 import userModel from "../models/userModel.js";
 import ConnectDB from "../configs/mongodb.js";
 
 const clerkWebhooks = async (req, res) => {
-    try {
-        await ConnectDB();
+  try {
+    await ConnectDB();
 
-        const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
+    const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
-        await whook.verify(JSON.stringify(req.body), {
-            "svix-id": req.headers["svix-id"],
-            "svix-timestamp": req.headers["svix-timestamp"],
-            "svix-signature": req.headers["svix-signature"],
-        });
+    // Verify signature
+    await whook.verify(JSON.stringify(req.body), {
+      "svix-id": req.headers["svix-id"],
+      "svix-timestamp": req.headers["svix-timestamp"],
+      "svix-signature": req.headers["svix-signature"],
+    });
 
-        const { data, type } = req.body;
+    const { data, type } = req.body;
 
-        switch (type) {
-            case "user.created": {
-                const userData = {
-                    clerkId: data.id,
-                    email: Array.isArray(data.email_address) ? data.email_address[0]?.email_address : "",
-                    firstName: data.first_name || "",
-                    lastName: data.last_name || "",
-                    photo: data.image_url || ""
-                  };
+    console.log("Webhook type:", type);
+    console.log("Data received:", JSON.stringify(data, null, 2));
 
+    switch (type) {
+      case "user.created": {
+        const userData = {
+          clerkId: data.id,
+          email: Array.isArray(data.email_address)
+            ? data.email_address[0]?.email_address
+            : "",
+          firstName: data.first_name || "",
+          lastName: data.last_name || "",
+          photo: data.image_url || "",
+        };
 
-                await userModel.create(userData);
-                res.status(201).json({ message: "User created" });
-                break;
-            }
+        await userModel.create(userData);
+        res.status(201).json({ message: "User created" });
+        break;
+      }
 
-            case "user.updated": {
-                const userData = {
-                    email: data.email_address[0].email_address,
-                    firstName: data.first_name,
-                    lastName: data.last_name,
-                    photo: data.image_url,
-                };
+      case "user.updated": {
+        const userData = {
+          email: Array.isArray(data.email_address)
+            ? data.email_address[0]?.email_address
+            : "",
+          firstName: data.first_name || "",
+          lastName: data.last_name || "",
+          photo: data.image_url || "",
+        };
 
-                await userModel.findOneAndUpdate({ clerkId: data.id }, userData);
-                res.json({ message: "User updated" });
-                break;
-            }
+        await userModel.findOneAndUpdate({ clerkId: data.id }, userData);
+        res.json({ message: "User updated" });
+        break;
+      }
 
-            case "user.deleted": {
-                await userModel.findOneAndDelete({ clerkId: data.id });
-                res.json({ message: "User deleted" });
-                break;
-            }
+      case "user.deleted": {
+        await userModel.findOneAndDelete({ clerkId: data.id });
+        res.json({ message: "User deleted" });
+        break;
+      }
 
-            default:
-                res.status(200).json({ message: "Unhandled event type" });
-                break;
-        }
-    } catch (error) {
-        console.error("Webhook error:", error.message);
-        res.status(500).json({ error: "Internal server error" });
+      default:
+        res.status(200).json({ message: "Unhandled event type" });
+        break;
     }
+  } catch (error) {
+    console.error("Webhook error:", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };
 
 export { clerkWebhooks };
