@@ -2,6 +2,8 @@
 // API controller function to manager clerk user with database
 //http://localhost:4000/api/user/webhooks
 // userController.js
+
+// userController.js
 import { Webhook } from "svix";
 import userModel from "../models/userModel.js";
 import ConnectDB from "../configs/mongodb.js";
@@ -12,6 +14,7 @@ const clerkWebhooks = async (req, res) => {
 
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
+    // Verify the webhook
     await whook.verify(JSON.stringify(req.body), {
       "svix-id": req.headers["svix-id"],
       "svix-timestamp": req.headers["svix-timestamp"],
@@ -20,22 +23,21 @@ const clerkWebhooks = async (req, res) => {
 
     const { data, type } = req.body;
 
+    // Debug logs
     console.log("Webhook event type:", type);
     console.log("Webhook data:", JSON.stringify(data, null, 2));
 
-    // Extract email safely from possible fields
+    // Extract email from data.email_addresses or primary_email_address
     let email = "";
-    if (Array.isArray(data.email_address) && data.email_address.length > 0) {
-      email = data.email_address[0]?.email_address || "";
-    } else if (Array.isArray(data.email_addresses) && data.email_addresses.length > 0) {
+    if (Array.isArray(data.email_addresses) && data.email_addresses.length > 0) {
       email = data.email_addresses[0]?.email_address || "";
     } else if (typeof data.primary_email_address === "string") {
       email = data.primary_email_address;
     }
 
-    // For user.created and user.updated, email is mandatory
+    // Email is required for user.created and user.updated
     if ((type === "user.created" || type === "user.updated") && !email) {
-      console.error("Webhook error: email is missing or empty");
+      console.error("Webhook error: email_address is missing or empty");
       return res.status(400).json({ error: "Invalid payload: missing email" });
     }
 

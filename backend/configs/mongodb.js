@@ -1,4 +1,4 @@
-// mongodb.js
+// configs/mongodb.js
 import mongoose from "mongoose";
 
 const ConnectDB = async () => {
@@ -10,9 +10,8 @@ const ConnectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI, {
       dbName: "RemoveBG",
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     });
+
     console.log("✅ Connected to MongoDB: RemoveBG");
   } catch (err) {
     console.error("❌ MongoDB connection error:", err.message);
