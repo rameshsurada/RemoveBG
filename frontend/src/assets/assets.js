@@ -1,4 +1,4 @@
-import logo from "/src/assets/logo.webp"
+import logo from "./logo.png"
 import hero from "/src/assets/hero.png"
 import credits1 from "../assets/credits1.png"
 import credits from "../assets/credits.png"

@@ -6,6 +6,7 @@ import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
 import { useClerk } from "@clerk/clerk-react";
 import { assets } from "../assets/assets";
 import { AppContext } from "../context/AppContext";
+import { useLocation } from "react-router-dom";
 
 const Menubar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,11 +15,7 @@ const Menubar = () => {
   const { user, isSignedIn } = useUser();
   const { credit, loadCreditsData } = useContext(AppContext);
 
-  useEffect(() => {
-    if (isSignedIn) {
-      loadCreditsData();
-    }
-  }, [isSignedIn]);
+  const location = useLocation();
 
   const openRegister = () => {
     openSignUp({});
@@ -31,14 +28,14 @@ const Menubar = () => {
   return (
     <nav className="bg-white px-8 py-4 flex justify-between items-center">
       {/* left side elements */}
-      <Link className="flex items-center space-x-2 cursor-pointer" to="/">
+      <Link className="flex items-center space-x-1 cursor-pointer" to="/">
         <img
-          src="/src/assets/icon.jpg"
+          src={assets.logo}
           className="h-8 w-8 flex flex-wrap items-center"
         />
         <span className="text-2xl font-semibold text-gray-700">
           Remove
-          <span className="text-2xl font-semibold text-yellow-600">BG</span>
+          <span className="text-2xl font-semibold text-indigo-600">BG</span>
         </span>
       </Link>
       {/* right side elements */}
@@ -62,8 +59,10 @@ const Menubar = () => {
             className="bg-blue-100 rounded-2xl px-4 py-1 flex text-center items-center hover:scale-105 duration-200"
             to="/buycredits"
           >
-            <img src={assets.credits} className="h-7 w-7" />
-            <p className="text-gray-600"> Credits: {credit}</p>
+            <img src={assets.credits} className="h-5 w-5" />
+            <p className="text-gray-600 font-medium px-1">
+              Credits: {credit === null ? "Loading..." : credit}
+            </p>
           </Link>
           <p className="text-gray-700 font-medium"> Hi, {user?.fullName}</p>
           <UserButton />
@@ -95,8 +94,8 @@ const Menubar = () => {
                   to="/buycredits"
                 >
                   <img src={assets.credits} className="h-7 w-7" />
-                  {/* Use credit from context, NOT hardcoded 0 */}
-                  <p className="text-gray-600"> Credits: {credit}</p>
+
+                  <p className="text-gray-600"> Credits: {credit} </p>
                 </Link>
                 <div className="flex gap-2 items-center">
                   <UserButton className="ml-2" />

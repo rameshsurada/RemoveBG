@@ -1,7 +1,9 @@
 import React from "react";
 import { plans } from "../assets/assets";
+import { useNavigate } from "react-router-dom";
 
 const Pricing = () => {
+  const navigate = useNavigate();
   return (
     <div className="text-center mt-10 sm:mt-15">
       <h1 className=" text-xl sm:text-3xl font-bold text-gray-800">
@@ -37,7 +39,10 @@ const Pricing = () => {
                 </li>
               </ul>
             </div>
-            <button className="mt-6 bg-indigo-500 text-white font-semibold py-2 px-6 rounded-full hover:bg-indigo-600 ">
+            <button
+              onClick={() => navigate("/payment-error")}
+              className="mt-6 bg-indigo-500 text-white font-semibold py-2 px-6 rounded-full hover:bg-indigo-600 "
+            >
               Choose Plan
             </button>
           </div>

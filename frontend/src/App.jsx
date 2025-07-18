@@ -6,6 +6,7 @@ import Menubar from "./components/Menubar";
 import Footer from "./components/Footer";
 import Result from "./pages/Result";
 import BuyCredits from "./pages/BuyCredits";
+import ErrorPage from "./pages/ErrorPage";
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/result" element={<Result />} />
         <Route path="/buycredits" element={<BuyCredits />} />
+        <Route path="/payment-error" element={<ErrorPage />} />
       </Routes>
       <Footer />
     </>

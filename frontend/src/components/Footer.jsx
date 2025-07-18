@@ -1,5 +1,6 @@
 import React from "react";
 import { Facebook, Twitter, Mail } from "lucide-react";
+import { assets } from "../assets/assets";
 
 const Footer = () => {
   return (
@@ -7,16 +8,15 @@ const Footer = () => {
       {/* left side element */}{" "}
       <div className=" grid grid-cols-1 sm:flex items-center space-x-2 ">
         {/* image logo */}
-        <div className="flex">
-          {" "}
+        <div className="flex items-center space-x-1 cursor-pointer" to="/">
           <img
-            src="/src/assets/icon.jpg"
+            src={assets.logo}
             className="h-8 w-8 flex flex-wrap items-center"
           />
           <span className="text-2xl font-semibold text-gray-700">
             Remove
-            <span className="text-2xl font-semibold text-yellow-600">BG</span>
-          </span>{" "}
+            <span className="text-2xl font-semibold text-indigo-600">BG</span>
+          </span>
         </div>
         {/* text */}
         <span>

@@ -1,29 +1,22 @@
-import { Clerk } from "@clerk/clerk-sdk-node";
-
-const clerk = new Clerk({ apiKey: process.env.CLERK_SECRET_KEY });
+// backend/middlewares/Auth.js
+import { verifyToken } from "@clerk/backend";
 
 const authUser = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ message: "Missing token" });
+
+  const token = authHeader.replace("Bearer ", "").trim();
+
   try {
-    const authHeader = req.headers.authorization || "";
-    const token = authHeader.replace("Bearer ", "").trim();
+    const payload = await verifyToken(token, {
+      secretKey: process.env.CLERK_SECRET_KEY,
+    });
 
-    if (!token) {
-      return res.status(401).json({ success: false, message: "No token provided" });
-    }
-
-    // This method validates the token and returns the session info
-    const session = await clerk.sessions.getSession(token);
-
-    if (!session) {
-      return res.status(401).json({ success: false, message: "Invalid session token" });
-    }
-
-    // Attach Clerk userId to request
-    req.clerkId = session.userId;
+    req.clerkId = payload.sub; 
     next();
-  } catch (error) {
-    console.error("Auth error:", error);
-    return res.status(401).json({ success: false, message: "Unauthorized: " + error.message });
+  } catch (err) {
+    console.error("Clerk token verification failed:", err.message);
+    res.status(401).json({ message: "Unauthorized" });
   }
 };
 

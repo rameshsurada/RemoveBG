@@ -1,8 +1,12 @@
 import React from "react";
 import { assets } from "../assets/assets";
 import { Upload } from "lucide-react";
+import { useState } from "react";
+import { useContext } from "react";
+import { AppContext } from "../context/AppContext";
 
 const Header = () => {
+  const { removeBg } = useContext(AppContext);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 items-center mt-12">
       {/* left side banner */}
@@ -25,7 +29,13 @@ const Header = () => {
         </p>{" "}
         <div className="mt-8  ">
           {" "}
-          <input type="file" accept="image/*" id="upload1" hidden />
+          <input
+            onChange={(e) => removeBg(e.target.files[0])}
+            type="file"
+            accept="image/*"
+            id="upload1"
+            hidden
+          />
           <label
             htmlFor="upload1"
             className="bg-black text-white rounded-2xl px-4 py-2 sm:px-6 sm:py-3 hover:opacity-85 cursor-pointer inline-flex gap-2 items-center"
