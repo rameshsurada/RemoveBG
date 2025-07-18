@@ -1,22 +1,23 @@
-// backend/middlewares/Auth.js
 import { verifyToken } from "@clerk/backend";
 
 const authUser = async (req, res, next) => {
   const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ message: "Missing token" });
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Missing or invalid token" });
+  }
 
-  const token = authHeader.replace("Bearer ", "").trim();
+  const token = authHeader.split(" ")[1].trim();
 
   try {
     const payload = await verifyToken(token, {
-      secretKey: process.env.CLERK_SECRET_KEY,
+      issuer: "https://destined-tortoise-99.clerk.accounts.dev",
     });
 
-    req.clerkId = payload.sub; 
+    req.clerkId = payload.sub;
     next();
   } catch (err) {
     console.error("Clerk token verification failed:", err.message);
-    res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized" });
   }
 };
 

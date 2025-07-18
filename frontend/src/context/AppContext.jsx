@@ -21,8 +21,11 @@ const AppContextProvider = (props) => {
     try {
       const token = await getToken();
       const { data } = await axios.get(backendUrl + "/api/user/credits", {
-        headers: { token }
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
+
       setCredit(data.credits);
     } catch (error) {
       console.log(error);
