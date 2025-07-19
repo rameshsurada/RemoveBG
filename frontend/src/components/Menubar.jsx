@@ -90,7 +90,7 @@ const Menubar = () => {
               </SignedOut>
               <SignedIn>
                 <Link
-                  className="bg-blue-100 rounded-2xl px-4 py-1 flex text-center items-center hover:scale-105 duration-200"
+                  className="bg-blue-100 rounded-2xl px-0 space-x-2 py-1 flex text-center items-center hover:scale-105 duration-200"
                   to="/buycredits"
                 >
                   <img src={assets.credits} className="h-7 w-7" />
