@@ -10,9 +10,9 @@ const authUser = async (req, res, next) => {
   const token = authHeader.split(" ")[1].trim();
 
   try {
-    // IMPORTANT: Use your **Frontend API URL** as the issuer here
     const payload = await verifyToken(token, {
       issuer: "https://destined-tortoise-99.clerk.accounts.dev",
+      jwksUrl: "https://destined-tortoise-99.clerk.accounts.dev/.well-known/jwks.json",
     });
 
     req.clerkId = payload.sub;
