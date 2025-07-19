@@ -1,7 +1,9 @@
+// middlewares/Auth.js
 import { verifyToken } from "@clerk/backend";
 
 const authUser = async (req, res, next) => {
   const authHeader = req.headers.authorization;
+
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ message: "Missing or invalid token" });
   }
@@ -10,7 +12,7 @@ const authUser = async (req, res, next) => {
 
   try {
     const payload = await verifyToken(token, {
-      issuer: "https://destined-tortoise-99.clerk.accounts.dev",
+      issuer: "https://destined-tortoise-99.clerk.accounts.dev", // 👈 your Clerk frontend URL
     });
 
     req.clerkId = payload.sub;
