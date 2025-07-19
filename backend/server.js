@@ -1,4 +1,4 @@
-// server.js
+
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
@@ -10,15 +10,15 @@ import { imageRouter } from './routes/imageRoutes.js';
 
 const app = express();
 
-// ✅ CORS: allow requests from frontend (Vercel frontend or localhost for dev)
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL, // e.g. "https://remove-bg-w6cn.vercel.app"
+  origin: process.env.FRONTEND_URL, 
   credentials: true,
 }));
 
 app.use(express.json());
 
-// ✅ Debug route to test JWK fetch
+
 app.get('/test-jwk', async (req, res) => {
   try {
     const response = await fetch("https://destined-tortoise-99.clerk.accounts.dev/.well-known/jwks.json");
@@ -35,11 +35,11 @@ app.get('/test-jwk', async (req, res) => {
   }
 });
 
-// ✅ API routes
+
 app.use('/api/user', userRouter);
 app.use('/api/image', imageRouter);
 
-// ✅ Health check
+
 app.get('/', (req, res) => res.send("API is working"));
 
 const PORT = process.env.PORT || 4000;
