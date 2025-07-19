@@ -1,4 +1,3 @@
-// backend/controllers/ImageController.js
 import axios from "axios";
 import fs from "fs";
 import FormData from "form-data";
@@ -8,7 +7,6 @@ export const removeBgImage = async (req, res) => {
   try {
     console.log("REQ.CLERK_ID RECEIVED:", req.clerkId);
 
-    
     const users = await userModel.find({});
     console.log("All users in DB:", users.map(u => u.clerkId));
 
@@ -29,7 +27,6 @@ export const removeBgImage = async (req, res) => {
     }
 
     const imagePath = req.file.path;
-
     const imageFile = fs.createReadStream(imagePath);
 
     const formdata = new FormData();
