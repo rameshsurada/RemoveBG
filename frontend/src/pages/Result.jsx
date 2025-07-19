@@ -11,37 +11,42 @@ const Result = () => {
     setImage(false);
     setResultImage(false);
     navigate("/");
+
+    // Scroll to top after navigation
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 200);
   };
 
   return (
-    <div className="mx-10 sm:mx-20 my-8 min-h-[80vh]">
-      <div className="bg-blue-50 rounded-2xl shadow-xl grid gap-6 pt-7 px-10 py-5">
-        {/* Images */}
-        <div className="grid sm:flex gap-8 justify-center">
-          {/* Original image */}
+    <div className="mx-4 sm:mx-16 my-8 min-h-[80vh]">
+      <div className="bg-blue-50 rounded-2xl shadow-xl p-6 sm:p-10 space-y-8">
+        {/* Image Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 justify-center items-start">
+          {/* Original Image */}
           <div className="text-center">
-            <p className="py-4 font-semibold text-gray-700">Original</p>
+            <p className="pb-4 font-semibold text-gray-700 text-lg">Original</p>
             {image ? (
               <img
                 src={URL.createObjectURL(image)}
                 alt="Original"
-                className="rounded-md max-w-xs"
+                className="rounded-md mx-auto w-full max-w-xs h-auto shadow"
               />
             ) : (
               <p className="text-sm text-gray-500">No image selected.</p>
             )}
           </div>
 
-          {/* Processed image */}
+          {/* Processed Image */}
           <div className="text-center">
-            <p className="py-4 font-semibold text-gray-700">
+            <p className="pb-4 font-semibold text-gray-700 text-lg">
               Background Removed
             </p>
             {resultImage ? (
               <img
-                src={resultImage} // ✅ base64 string used directly
+                src={resultImage}
                 alt="Background Removed"
-                className="rounded-md max-w-xs"
+                className="rounded-md mx-auto w-full max-w-xs h-auto shadow"
               />
             ) : image ? (
               <div className="flex justify-center items-center h-48 w-48 mx-auto">
@@ -53,11 +58,11 @@ const Result = () => {
           </div>
         </div>
 
-        {/* Action buttons */}
-        <div className="grid gap-2 sm:flex justify-end">
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row justify-end items-center gap-4 pt-2">
           <button
             onClick={handleTryAnother}
-            className="px-4 py-2 border rounded-2xl border-indigo-400 hover:scale-105 duration-300"
+            className="px-5 py-2.5 border border-indigo-400 rounded-2xl text-indigo-700 font-medium hover:scale-105 duration-300 transition-all"
           >
             Try another image
           </button>
@@ -66,7 +71,7 @@ const Result = () => {
             <a
               href={resultImage}
               download="background-removed.png"
-              className="px-4 bg-gradient-to-r text-white py-2 from-indigo-400 to-blue-300 rounded-2xl hover:scale-105 duration-300 text-center"
+              className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-blue-400 text-white font-medium rounded-2xl hover:scale-105 duration-300 transition-all"
             >
               Download image
             </a>
