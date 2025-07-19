@@ -1,6 +1,7 @@
 import { verifyToken } from "@clerk/backend";
+import exp from "constants";
 
-const authUser = async (req, res, next) => {
+ const authUser = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -8,6 +9,7 @@ const authUser = async (req, res, next) => {
   }
 
   const token = authHeader.split(" ")[1].trim();
+  console.log("Incoming token:", token); // 👈 log it
 
   try {
     const payload = await verifyToken(token, {
@@ -15,11 +17,12 @@ const authUser = async (req, res, next) => {
       jwksUrl: "https://destined-tortoise-99.clerk.accounts.dev/.well-known/jwks.json",
     });
 
+    console.log("Token verified. Payload:", payload); // 👈 log payload
     req.clerkId = payload.sub;
     next();
   } catch (err) {
     console.error("Clerk token verification failed:", err.message);
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Non authorized" });
   }
 };
 
